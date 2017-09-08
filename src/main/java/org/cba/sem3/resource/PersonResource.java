@@ -1,5 +1,6 @@
 package org.cba.sem3.resource;
 
+import com.google.gson.JsonObject;
 import org.cba.sem3.entity.Person;
 import org.cba.sem3.facade.IPersonFacade;
 import org.cba.sem3.facade.PersonFacade;
@@ -42,21 +43,29 @@ public class PersonResource {
 
     @POST
     @Consumes("application/json")
-    public void savePerson(String json) {
+    @Produces("application/json")
+    public String savePerson(String json) {
         Person person = PersonJSONConverter.getPersonFromJson(json);
         facade.addPerson(person);
+        return PersonJSONConverter.getJSONFromPerson(person);
     }
 
     @PUT
     @Consumes("application/json")
-    public void updatePerson(String json) {
+    @Produces("application/json")
+    public String updatePerson(String json) {
         Person person = PersonJSONConverter.getPersonFromJson(json);
         facade.editPerson(person);
+        return PersonJSONConverter.getJSONFromPerson(person);
     }
 
     @DELETE
+    @Produces("application/json")
     @Path("{id}")
-    public void deletePerson(@PathParam("id") int id) {
+    public String deletePerson(@PathParam("id") int id) {
         facade.deletePerson(id);
+        JsonObject successMessage = new JsonObject();
+        successMessage.addProperty("success", "Person with id " + id + " was deleted!");
+        return successMessage.toString();
     }
 }

@@ -1,6 +1,7 @@
 package org.cba.sem3.facade;
 
 import org.cba.sem3.entity.Person;
+import org.cba.sem3.exception.ExceptionFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -40,7 +41,11 @@ public class PersonFacade implements IPersonFacade {
 
     @Override
     public Person getPerson(int id) {
-        return em.find(Person.class, id);
+        Person person = em.find(Person.class, id);
+        if (person == null) {
+            throw ExceptionFactory.createNotFound(id);
+        }
+        return person;
     }
 
     @Override
